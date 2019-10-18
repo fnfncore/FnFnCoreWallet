@@ -942,27 +942,30 @@ void CNetChannel::AddNewTx(const uint256& hashFork,const uint256& txid,CSchedule
         CTransaction *pTx = sched.GetTransaction(hashTx,nNonceSender);
         if (pTx != NULL)
         {
-            if (pWorldLine->ExistsTx(txid))
-            {
-                return;
-            }
-
-            MvErr err = pDispatcher->AddNewTx(*pTx,nNonceSender);
-            if (err == MV_OK)
+            if(pWorldLine->ExistsTx(vtx[i]))
             {
                 sched.GetNextTx(hashTx,vtx,setTx);
                 sched.RemoveInv(network::CInv(network::CInv::MSG_TX,hashTx),setSchedPeer);
-                
-                if(!IsSuperNodeInnerNonce(nNonceSender))
-                {
-                    DispatchAwardEvent(nNonceSender,CEndpointManager::MAJOR_DATA);
-                }
-
-                nAddNewTx++;
             }
-            else if (err != MV_ERR_MISSING_PREV)
+            else
             {
-                sched.InvalidateTx(hashTx,setMisbehavePeer);
+                MvErr err = pDispatcher->AddNewTx(*pTx,nNonceSender);
+                if (err == MV_OK)
+                {
+                    sched.GetNextTx(hashTx,vtx,setTx);
+                    sched.RemoveInv(network::CInv(network::CInv::MSG_TX,hashTx),setSchedPeer);
+                    
+                    if(!IsSuperNodeInnerNonce(nNonceSender))
+                    {
+                        DispatchAwardEvent(nNonceSender,CEndpointManager::MAJOR_DATA);
+                    }
+
+                    nAddNewTx++;
+                }
+                else if (err != MV_ERR_MISSING_PREV)
+                {
+                    sched.InvalidateTx(hashTx,setMisbehavePeer);
+                }
             }
         }
     }
