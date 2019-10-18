@@ -551,7 +551,7 @@ bool CTxPool::SynchronizeWorldLine(const CWorldLineUpdate& update,CTxSetChange& 
                 if (AddNew(txView,txid,tx,update.hashFork,update.nLastBlockHeight) == MV_OK)
                 {
                     if (spent0 != 0) txView.SetSpent(CTxOutPoint(txid,0),spent0);
-                    if (spent1 != 0) txView.SetSpent(CTxOutPoint(txid,1),spent0);
+                    if (spent1 != 0) txView.SetSpent(CTxOutPoint(txid,1),spent1);
 
                     change.mapTxUpdate.insert(make_pair(txid,-1));
                 }
