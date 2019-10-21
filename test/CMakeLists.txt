@@ -14,7 +14,7 @@ set(sources
 	version_tests.cpp
 	mpvss_tests.cpp
 	crypto_tests.cpp
-	ipv6_tests.cpp
+	ip_tests.cpp
 )
 
 add_executable(test_fnfn ${sources})
