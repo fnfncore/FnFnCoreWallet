@@ -68,6 +68,11 @@ elseif(UNIX AND NOT APPLE)
     link_libraries(-ldl)
 endif()
 
+# warnings
+if (APPLE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden -fvisibility=hidden")
+endif()
+
 # sub directories
 add_subdirectory(src)
 add_subdirectory(walleve)
