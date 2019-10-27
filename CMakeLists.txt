@@ -27,6 +27,13 @@ else()
 endif()
 
 # packages
+if(CMAKE_BUILD_TYPE STREQUAL Deploy)
+    set(OPENSSL_USE_STATIC_LIBS ON)
+    set(sodium_USE_STATIC_LIBS ON)
+    set(Readline_USE_STATIC_LIBS ON)
+    set(Boost_USE_MULTITHREADED ON)
+endif()
+
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost 1.58.0 REQUIRED COMPONENTS
@@ -44,7 +51,7 @@ find_package(sodium 1.0.8 REQUIRED)
 find_package(Readline 5.0 REQUIRED)
 
 set(Protobuf_USE_STATIC_LIBS ON)
-find_package(Protobuf 3.3.0 REQUIRED)
+find_package(Protobuf 3.0.0 REQUIRED)
 
 if(OPENSSL_VERSION VERSION_EQUAL 1.1.0 OR 
     (OPENSSL_VERSION VERSION_GREATER 1.1.0 AND OPENSSL_VERSION VERSION_LESS 1.2.0))
@@ -58,6 +65,7 @@ if(WIN32)
     find_library(WSSOCK32_LIB NAMES wsock32)
 elseif(UNIX AND NOT APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lrt")
+    link_libraries(-ldl)
 endif()
 
 # sub directories

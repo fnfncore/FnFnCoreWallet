@@ -13,7 +13,9 @@ cd build
 
 # cmake
 flag=""
-if [ "$1" == "debug" ]; then
+if [ "$1" == "deploy" ]; then
+    flag="-DCMAKE_BUILD_TYPE=Deploy"
+elif [ "$1" == "debug" ]; then
     flag="-DCMAKE_BUILD_TYPE=Debug"
 else
     flag="-DCMAKE_BUILD_TYPE=Release"
@@ -47,8 +49,5 @@ else
         sudo make install
     fi
 fi
-
-pwd
-cp src/multiverse* ../docker/apps
 
 cd $origin_path

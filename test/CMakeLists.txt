@@ -25,8 +25,14 @@ target_link_libraries(test_fnfn
 	Boost::unit_test_framework
 	Boost::system
 	Boost::thread
-	mpvss
-	crypto
+    OpenSSL::SSL
+    OpenSSL::Crypto
+    mpvss
+    crypto
+    walleve
+    storage    
+    network
+    common
 )
 
 add_executable(test_ctsdb test_fnfn_main.cpp test_fnfn.h test_fnfn.cpp ctsdb_test.cpp)
