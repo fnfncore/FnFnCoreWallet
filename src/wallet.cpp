@@ -48,7 +48,7 @@ public:
     CDBTxWalker(CWallet* pWalletIn) : pWallet(pWalletIn) {}
     bool Walk(const CWalletTx& wtx) override
     {
-        return pWallet->LoadTx(wtx);
+        return pWallet->LoadTxUnspent(wtx);
     }
 protected:
     CWallet* pWallet;
@@ -618,7 +618,7 @@ bool CWallet::UpdateTx(const uint256& hashFork,const CAssembledTx& tx)
     return true;
 }
 
-bool CWallet::LoadTx(const CWalletTx& wtx)
+bool CWallet::LoadTxUnspent(const CWalletTx& wtx)
 {
     std::shared_ptr<CWalletTx> spWalletTx(new CWalletTx(wtx));
     mapWalletTx.insert(make_pair(wtx.txid,spWalletTx));
@@ -626,9 +626,63 @@ bool CWallet::LoadTx(const CWalletTx& wtx)
     vector<uint256> vFork;
     GetWalletTxFork(spWalletTx->hashFork,spWalletTx->nBlockHeight,vFork);
 
-    AddNewWalletTx(spWalletTx,vFork);
+    if (spWalletTx->IsFromMe())
+    {
+        for(const uint256& hashFork : vFork)
+        {
+            mapWalletUnspent[spWalletTx->destIn].Push(hashFork,spWalletTx,1);
+        }
+    }
+    if (spWalletTx->IsMine())
+    {
+        for(const uint256& hashFork : vFork)
+        {
+            mapWalletUnspent[spWalletTx->sendTo].Push(hashFork,spWalletTx,0);
+        }
+    }
+    
 
     return true; 
+}
+
+bool CWallet::LoadTxSpent(const CWalletTx& wtx)
+{
+    vector<uint256> vFork;
+    GetWalletTxFork(wtx.hashFork,wtx.nBlockHeight,vFork);
+    if (wtx.IsFromMe())
+    {
+        for(const CTxIn& txin : wtx.vInput)
+        {
+            map<uint256,std::shared_ptr<CWalletTx> >::iterator it = mapWalletTx.find(txin.prevout.hash);
+            if (it != mapWalletTx.end())
+            {
+                std::shared_ptr<CWalletTx>& spPrevWalletTx = (*it).second;
+                for(const uint256& hashFork : vFork)
+                {
+                    mapWalletUnspent[wtx.destIn].Pop(hashFork,spPrevWalletTx,txin.prevout.n);
+                }
+                if (!spPrevWalletTx->GetRefCount())
+                {
+                    mapWalletTx.erase(it);
+                }
+            }
+        }
+    }
+    return true;
+}
+
+bool CWallet::InitLoadTxSpent()
+{
+    bool fInitSuccess = true;
+    for(auto iter = mapWalletTx.begin(); iter != mapWalletTx.end(); ++iter)
+    {
+        if(!LoadTxSpent(*(iter->second)))
+        {
+            fInitSuccess = false;
+            break;
+        }
+    }
+    return fInitSuccess;
 }
 
 bool CWallet::AddNewFork(const uint256& hashFork,const uint256& hashParent,const int32 nOriginHeight)
@@ -885,6 +939,12 @@ bool CWallet::LoadDB()
             return false;
         } 
     }
+
+    if(!InitLoadTxSpent())
+    {
+        return false;
+    }
+
     return true;
 }
 
