@@ -1,0 +1,25 @@
+name: CPP-CI
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup Build Environment
+      run: sudo apt update && sudo apt install -y g++ cmake libboost-all-dev openssl libssl1.0-dev libreadline-dev pkg-config libsodium-dev libprotobuf-dev protobuf-compiler
+    - name: install
+      run: ./INSTALL.sh
+    - name: test
+      run: ./build/test/test_fnfn
+    
+    
