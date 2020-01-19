@@ -34,8 +34,6 @@ BOOST_AUTO_TEST_CASE(multisign)
             setPubKey.insert(keys[i].pubkey);
         }
 
-        uint256 anchor;
-        CryptoGetRand256(anchor);
         uint256 msg;
         CryptoGetRand256(msg);
 
@@ -43,7 +41,7 @@ BOOST_AUTO_TEST_CASE(multisign)
         for (int i = 0; i < nPartKey; i++)
         {
             boost::posix_time::ptime t0 = boost::posix_time::microsec_clock::universal_time();
-            BOOST_CHECK(CryptoMultiSign(setPubKey, keys[i], anchor.begin(), anchor.size(), msg.begin(), msg.size(), vchSig));
+            BOOST_CHECK(CryptoMultiSign(setPubKey, keys[i], msg.begin(), msg.size(), vchSig));
             boost::posix_time::ptime t1 = boost::posix_time::microsec_clock::universal_time();
             signTime = (t1 - t0).ticks();
             ++signCount;
@@ -51,7 +49,7 @@ BOOST_AUTO_TEST_CASE(multisign)
 
         std::set<uint256> setPartKey;
         boost::posix_time::ptime t0 = boost::posix_time::microsec_clock::universal_time();
-        BOOST_CHECK(CryptoMultiVerify(setPubKey, anchor.begin(), anchor.size(), msg.begin(), msg.size(), vchSig, setPartKey) && (setPartKey.size() == nPartKey));
+        BOOST_CHECK(CryptoMultiVerify(setPubKey, msg.begin(), msg.size(), vchSig, setPartKey) && (setPartKey.size() == nPartKey));
         boost::posix_time::ptime t1 = boost::posix_time::microsec_clock::universal_time();
         verifyTime += (t1 - t0).ticks();
     }

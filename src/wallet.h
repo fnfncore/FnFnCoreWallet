@@ -161,7 +161,7 @@ protected:
     std::shared_ptr<CWalletTx> LoadWalletTx(const uint256& txid);
     std::shared_ptr<CWalletTx> InsertWalletTx(const uint256& txid,const CAssembledTx &tx,const uint256& hashFork,bool fIsMine,bool fFromMe);
     bool SignPubKey(const crypto::CPubKey& pubkey,const uint256& hash,std::vector<uint8>& vchSig) const;
-    bool SignMultiPubKey(const std::set<crypto::CPubKey>& setPubKey,const uint256& seed,const uint256& hash,std::vector<uint8>& vchSig) const;
+    bool SignMultiPubKey(const std::set<crypto::CPubKey>& setPubKey,const uint256& hash,std::vector<uint8>& vchSig) const;
     bool SignDestination(const CDestination& destIn, const CTransaction& tx, const uint256& hash, std::vector<uint8>& vchSig, bool& fCompleted) const;
     bool UpdateFork();
     void GetWalletTxFork(const uint256& hashFork,const int32 nHeight,std::vector<uint256>& vFork);
