@@ -1151,7 +1151,7 @@ bool CWallet::SignPubKey(const crypto::CPubKey& pubkey,const uint256& hash,vecto
     return false;
 }
 
-bool CWallet::SignMultiPubKey(const set<crypto::CPubKey>& setPubKey,const uint256& seed,const uint256& hash,vector<uint8>& vchSig) const
+bool CWallet::SignMultiPubKey(const set<crypto::CPubKey>& setPubKey,const uint256& hash,vector<uint8>& vchSig) const
 {
     bool fSigned = false;
     for (auto& pubkey : setPubKey)
@@ -1159,7 +1159,7 @@ bool CWallet::SignMultiPubKey(const set<crypto::CPubKey>& setPubKey,const uint25
         map<crypto::CPubKey,CWalletKeyStore>::const_iterator it = mapKeyStore.find(pubkey);
         if (it != mapKeyStore.end())
         {
-            fSigned |= (*it).second.key.MultiSign(setPubKey,seed,hash,vchSig);
+            fSigned |= (*it).second.key.MultiSign(setPubKey,hash,vchSig);
         }
     }
     return fSigned;
@@ -1210,7 +1210,7 @@ bool CWallet::SignDestination(const CDestination& destIn, const CTransaction& tx
                 setPubKey.insert(dest.GetPubKey());
             }
 
-            if (!SignMultiPubKey(setPubKey, tx.hashAnchor, hash, vchSubSig))
+            if (!SignMultiPubKey(setPubKey, hash, vchSubSig))
             {
                 return false;
             }
