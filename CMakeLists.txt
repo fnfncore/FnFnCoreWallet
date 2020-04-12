@@ -34,6 +34,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Deploy)
     set(Boost_USE_MULTITHREADED ON)
 endif()
 
+set(Boost_NO_BOOST_CMAKE ON)
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost 1.58.0 REQUIRED COMPONENTS
