@@ -22,5 +22,6 @@ add_library(mpvss ${sources})
 include_directories(../walleve ../crypto ./)
 
 target_link_libraries(mpvss
+    crypto
     walleve
 )
