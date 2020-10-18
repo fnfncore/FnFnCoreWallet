@@ -110,6 +110,10 @@ public:
         {
             return 0;
         }
+        else if (IsOrigin())
+        {
+            return 1;
+        }
         else if (vchProof.empty())
         {
             return 1;

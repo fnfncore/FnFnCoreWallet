@@ -291,6 +291,10 @@
                 "type": "int",
                 "desc": "confirmations",
                 "required": false
+            },
+            "size": {
+                "type": "int",
+                "desc": "tx size"
             }
         }
     },
@@ -392,6 +396,14 @@
                         "desc": "transaction hash"
                     }
                 }
+            },
+            "size": {
+                "type": "int",
+                "desc": "block size"
+            },
+            "trust": {
+                "type": "int",
+                "desc": "chain trust"
             }
         }
     },

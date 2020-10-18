@@ -73,6 +73,8 @@ static CBlockData BlockToJSON(const uint256& hashBlock,const CBlock& block,const
     {
         data.vecTx.push_back(tx.GetHash().GetHex());
     }
+    data.nSize = GetSerializeSize(block);
+    data.nTrust = block.GetBlockTrust();
     return data;
 }
 
@@ -103,7 +105,7 @@ static CTransactionData TxToJSON(const uint256& txid,const CTransaction& tx,cons
     {
         ret.nConfirmations = nDepth;
     }
-
+    ret.nSize = GetSerializeSize(tx);
     return ret;
 }
 
