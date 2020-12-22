@@ -140,7 +140,9 @@ public:
     bool SynchronizeTxSet(const CTxSetChange& change) override;
     bool AddNewTx(const uint256& hashFork,const CAssembledTx& tx) override;
     bool UpdateTx(const uint256& hashFork,const CAssembledTx& tx);
-    bool LoadTx(const CWalletTx& wtx);
+    bool LoadTxUnspent(const CWalletTx& wtx);
+    bool LoadTxSpent(const CWalletTx& wtx);
+    bool InitLoadTxSpent();
     bool AddNewFork(const uint256& hashFork,const uint256& hashParent,const int32 nOriginHeight) override;
     /* Resync */
     bool SynchronizeWalletTx(const CDestination& destNew) override;
